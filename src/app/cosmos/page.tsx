@@ -18,7 +18,7 @@ export default function CosmosPage() {
       id: '1',
       role: 'assistant',
       content:
-        "✨ Welcome, cosmic explorer. I'm here to answer your questions about the universe and offer gentle reflections on your journey. What would you like to explore today?\n\n🤖 I now support multiple AI backends:\n• OpenAI GPT-3.5 (add OPENAI_API_KEY)\n• Ollama local AI (install ollama)\n• Cloudflare Workers AI (when deployed)\n• Smart fallbacks for common questions",
+        "✨ Welcome, cosmic explorer. I'm here to answer your questions about the universe and offer gentle reflections on your journey. What would you like to explore today?",
       timestamp: Date.now(),
     },
   ]);
