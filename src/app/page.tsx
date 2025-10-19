@@ -187,10 +187,6 @@ export default function Home() {
             {[
               'Cloudflare Workers AI',
               'Next.js',
-              'D1',
-              'Workers',
-              'KV',
-              'Edge Inference',
             ].map((tech) => (
               <span
                 key={tech}
@@ -207,12 +203,10 @@ export default function Home() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2 }}
-          className="mt-16 text-center text-gray-500 text-sm"
+          className="mt-24 text-center text-gray-500 text-sm"
         >
           <p>
-            Built with 💜 for HackTX 2025
-            <br />
-            Best Celestial Theme • Best Design • Best AI App with Cloudflare
+            HackTX 2025
           </p>
         </motion.footer>
       </div>

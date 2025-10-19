@@ -2,11 +2,12 @@
 
 **Transform Your Emotions Into Cosmic Art**
 
-A cosmic journaling app for HackTX 2025 that uses AI to analyze your emotions and render them as beautiful, real-time nebula visualizations.
+A cosmic journaling app for HackTX 2025 that uses AI to analyze your emotions and render them as beautiful, real-time nebula visualizations. Each user's journal entries are stored locally in their browser for complete privacy.
 
 ![Nebula Notes](https://img.shields.io/badge/HackTX-2025-purple?style=for-the-badge)
 ![Cloudflare](https://img.shields.io/badge/Cloudflare-Workers%20AI-orange?style=for-the-badge)
 ![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge)
+![Privacy](https://img.shields.io/badge/Privacy-Local%20Storage-green?style=for-the-badge)
 
 ## ✨ Features
 
@@ -16,25 +17,32 @@ Write your thoughts in a distraction-free, beautiful editor with real-time emoti
 
 ### 🌈 Emotion → Nebula
 
-Watch your emotions transform into dynamic WebGL nebulas:
+Watch your emotions transform into dynamic WebGL nebulas with realistic cosmic formations:
 
-- **Joy**: Bright blues & purples
-- **Calm**: Soft purple & pink
-- **Sadness**: Deep blues
-- **Anger**: Reds & oranges
-- **Anxiety**: Warm oranges
+- **Realistic Nebula Physics**: Cores, floating clouds, and spectral colors
+- **Emotion-Based Colors**: Joy (bright blues & purples), Calm (soft purple & pink), Sadness (deep blues), Anger (reds & oranges), Anxiety (warm oranges)
+- **Dynamic Particle Systems**: Twinkling stars, drifting clouds, and pulsing cores
+- **LLM-Powered Analysis**: Advanced emotion detection using Llama 3.1 for nuanced understanding
 
 ### 🔭 Ask the Cosmos
 
 An AI assistant that:
 
-- Answers astronomy questions
+- Answers astronomy questions with cosmic expertise
 - Provides gentle reflections on your journal entries
-- Powered by Llama 3.1 8B Instruct
+- Powered by Cloudflare Workers AI (Llama 3.1 8B Instruct) - **FREE!**
+- Smart fallbacks ensure it always works
 
 ### 📚 Entry History
 
-View all your past entries with their associated emotional nebulas in a beautiful timeline.
+View all your past entries with their associated emotional nebulas in a beautiful timeline. **Each user's entries are stored locally in their browser for complete privacy.**
+
+### 🔒 Privacy-First Design
+
+- **Local Storage**: All journal entries stay in your browser
+- **No Shared Data**: Each user has their own private journal
+- **Offline Capable**: Works without internet connection
+- **No Server Storage**: Your thoughts never leave your device
 
 ## 🚀 Quick Start
 
@@ -43,11 +51,9 @@ View all your past entries with their associated emotional nebulas in a beautifu
 - Node.js 18+
 - Cloudflare account (for deployment)
 
-### AI Options (Choose One)
+### AI Setup
 
-1. **OpenAI API** (recommended) - Add `OPENAI_API_KEY` to `.env.local`
-2. **Ollama Local AI** (free) - Install Ollama and run `ollama serve`
-3. **Smart Fallbacks** (always works) - No setup needed
+**Cloudflare Workers AI LLM** - We use Cloudflare Workers AI with Llama 3.1 8B Instruct for emotion analysis and chat functionality. Works out of the box when deployed!
 
 ### Installation
 
@@ -103,10 +109,12 @@ Your app will be deployed to Cloudflare Pages + Workers!
 
 - **Frontend**: Next.js 15, React 19, TailwindCSS 4, Framer Motion
 - **Backend**: Cloudflare Workers
-- **AI**: Workers AI (Llama 3.1, DistilBERT)
-- **Database**: D1 (SQLite)
+- **AI**: Workers AI (Llama 3.1 8B Instruct) - FREE!
+- **Storage**: Browser localStorage (privacy-first)
+- **Database**: D1 (SQLite) - for shared features only
 - **Cache**: KV (Key-Value Store)
 - **Deployment**: Cloudflare Pages + OpenNext
+- **Animation**: WebGL Canvas API for realistic nebula physics
 
 ## 🎯 HackTX 2025 Categories
 
@@ -126,10 +134,11 @@ This project targets:
 
 ✅ **Best AI App with Cloudflare**
 
-- Workers AI for sentiment analysis & chat
-- D1 for persistent storage
-- KV for caching
+- Workers AI for sentiment analysis & chat (FREE!)
+- Advanced LLM-powered emotion analysis
 - Edge inference for speed
+- Smart fallbacks for reliability
+- Privacy-first local storage
 
 ## 📖 Documentation
 
@@ -178,15 +187,18 @@ npx wrangler tail
 /src
   /app
     /api
-      /analyze      → Sentiment analysis API
-      /chat         → AI chat API
-      /entries      → CRUD API
+      /analyze      → LLM-powered emotion analysis API
+      /chat         → AI chat API (Cloudflare Workers AI)
+      /entries      → CRUD API (legacy, now uses localStorage)
+      /entries-local → Local storage API
     /journal        → Journal editor page
     /cosmos         → Chat interface page
     /entries        → History page
     page.tsx        → Landing page
   /components
-    NebulaCanvas.tsx → WebGL nebula visualization
+    NebulaCanvas.tsx → WebGL nebula visualization with realistic physics
+  /lib
+    localStorage.ts  → Privacy-first local storage utilities
 /schema.sql         → D1 database schema
 /wrangler.jsonc     → Cloudflare configuration
 ```
@@ -201,12 +213,18 @@ MIT
 
 ## 🌟 Acknowledgments
 
-- Cloudflare for the amazing Workers AI platform
+- Cloudflare for the amazing Workers AI platform (FREE!)
 - HackTX 2025 for the inspiration
 - The cosmos for being endlessly fascinating ✨
+- WebGL Canvas API for realistic nebula physics
+- LocalStorage for privacy-first design
+
+## 🚀 Live Demo
+
+**Try it now**: [https://nebula-notes.bychen125.workers.dev](https://nebula-notes.bychen125.workers.dev)
 
 ---
 
-Built with 💜 by [Your Team Name]
+Built with 💜 for HackTX 2025
 
 _May your emotions shine as brightly as the stars_ 🌟

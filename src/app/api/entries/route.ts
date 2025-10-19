@@ -13,8 +13,14 @@ type Env = {
 
 // Helper to get user ID (simplified - use real auth in production)
 function getUserId(request: NextRequest): string {
-  // For hackathon: use a cookie or default user
-  const userId = request.cookies.get('user_id')?.value || 'demo-user';
+  // Generate a unique user ID for each session
+  let userId = request.cookies.get('user_id')?.value;
+  
+  if (!userId) {
+    // Generate a unique ID for this user session
+    userId = 'user_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+  }
+  
   return userId;
 }
 

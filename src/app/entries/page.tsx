@@ -5,15 +5,16 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import NebulaCanvas from '@/components/NebulaCanvas';
 import { formatDistance } from 'date-fns';
+import { getEntries, deleteEntry, type EntryWithEmotion } from '@/lib/localStorage';
 
 interface Entry {
   id: string;
   content: string;
   created_at: number;
   sentiment?: string;
-  emotions?: string;
+  emotions?: string[];
   intensity?: number;
-  color_palette?: string;
+  colorPalette?: string[];
 }
 
 export default function EntriesPage() {
@@ -29,11 +30,21 @@ export default function EntriesPage() {
   const fetchEntries = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/entries');
-      if (response.ok) {
-        const data = await response.json() as { entries: Entry[] };
-        setEntries(data.entries || []);
-      }
+      // Get entries from localStorage instead of shared database
+      const localEntries = getEntries();
+      
+      // Convert to the expected format
+      const formattedEntries: Entry[] = localEntries.map(entry => ({
+        id: entry.id,
+        content: entry.content,
+        created_at: entry.created_at,
+        sentiment: entry.emotion?.sentiment,
+        emotions: entry.emotion?.emotions,
+        intensity: entry.emotion?.intensity,
+        colorPalette: entry.emotion?.colorPalette,
+      }));
+      
+      setEntries(formattedEntries);
     } catch (error) {
       console.error('Failed to fetch entries:', error);
     } finally {
@@ -45,11 +56,10 @@ export default function EntriesPage() {
     if (!confirm('Delete this entry from the cosmos?')) return;
 
     try {
-      const response = await fetch(`/api/entries?id=${id}`, {
-        method: 'DELETE',
-      });
-
-      if (response.ok) {
+      // Delete from localStorage instead of shared database
+      const success = deleteEntry(id);
+      
+      if (success) {
         setEntries((prev) => prev.filter((e) => e.id !== id));
         if (selectedEntry?.id === id) {
           setSelectedEntry(null);
@@ -127,9 +137,7 @@ export default function EntriesPage() {
               </h2>
               <div className="space-y-3 max-h-[calc(100vh-200px)] overflow-y-auto pr-2 custom-scrollbar">
                 {entries.map((entry, index) => {
-                  const emotions = entry.emotions
-                    ? JSON.parse(entry.emotions)
-                    : [];
+                  const emotions = entry.emotions || [];
                   const isSelected = selectedEntry?.id === entry.id;
 
                   return (
@@ -209,16 +217,12 @@ export default function EntriesPage() {
                     </p>
                   </div>
 
-                  {selectedEntry.color_palette && (
+                  {selectedEntry.colorPalette && (
                     <div className="flex justify-center">
                       <NebulaCanvas
-                        emotions={
-                          selectedEntry.emotions
-                            ? JSON.parse(selectedEntry.emotions)
-                            : ['neutral']
-                        }
+                        emotions={selectedEntry.emotions || ['neutral']}
                         intensity={selectedEntry.intensity || 0.5}
-                        colorPalette={JSON.parse(selectedEntry.color_palette)}
+                        colorPalette={selectedEntry.colorPalette}
                         size="medium"
                       />
                     </div>

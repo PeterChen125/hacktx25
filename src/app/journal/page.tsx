@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import NebulaCanvas from '@/components/NebulaCanvas';
 import { useRouter } from 'next/navigation';
+import { saveEntry, type EmotionData } from '@/lib/localStorage';
 
 export default function JournalPage() {
   const router = useRouter();
@@ -62,31 +63,40 @@ export default function JournalPage() {
     setSavedMessage('');
 
     try {
-      const response = await fetch('/api/entries', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content }),
-      });
+      // Save to localStorage instead of shared database
+      const entry = {
+        id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+        content: content.trim(),
+        created_at: Date.now(),
+        updated_at: Date.now(),
+      };
 
-      if (response.ok) {
-        setSavedMessage('✨ Entry saved to the cosmos');
-        setTimeout(() => setSavedMessage(''), 3000);
-        
-        // Clear the editor after save
-        setTimeout(() => {
-          setContent('');
-          setEmotion(null);
-        }, 1500);
-      } else {
-        setSavedMessage('Failed to save entry');
-      }
+      // Save with emotion data if available
+      const emotionData: EmotionData | undefined = emotion ? {
+        sentiment: emotion.sentiment,
+        confidence: emotion.confidence,
+        emotions: emotion.emotions,
+        intensity: emotion.intensity,
+        colorPalette: emotion.colorPalette,
+      } : undefined;
+
+      saveEntry(entry, emotionData);
+      
+      setSavedMessage('✨ Entry saved locally to your browser');
+      setTimeout(() => setSavedMessage(''), 3000);
+      
+      // Clear the editor after save
+      setTimeout(() => {
+        setContent('');
+        setEmotion(null);
+      }, 1500);
     } catch (error) {
       console.error('Failed to save:', error);
       setSavedMessage('Failed to save entry');
     } finally {
       setIsSaving(false);
     }
-  }, [content]);
+  }, [content, emotion]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0A0E27] via-[#1A1F3A] to-[#0A0E27] text-white">
@@ -217,7 +227,7 @@ export default function JournalPage() {
             transition={{ delay: 0.2 }}
             className="sticky top-8"
           >
-            <h3 className="text-xl font-semibold mb-4">Your Emotional Nebula</h3>
+            <h3 className="text-xl font-semibold mb-4 text-center">Your Emotional Nebula</h3>
             <div className="flex justify-center">
               {emotion ? (
                 <NebulaCanvas
