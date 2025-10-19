@@ -5,6 +5,7 @@ type Env = {
   AI: {
     run: (model: string, input: any) => Promise<any>;
   };
+  OPENAI_API_KEY?: string;
 };
 
 // System prompts for different modes
@@ -38,76 +39,43 @@ export async function POST(request: NextRequest) {
 
     let aiResponse = '';
 
-    // Try multiple AI services in order of preference
+    // Try Cloudflare Workers AI REST API (FREE!)
     try {
-      // Option 1: Cloudflare Workers AI (if deployed)
-      const env = process.env as unknown as Env;
-      if (env.AI) {
-        console.log('Using Cloudflare Workers AI');
-        const response = await env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: message },
-          ],
-          max_tokens: 512,
-          temperature: 0.7,
-        });
-
-        if (response && response.response) {
-          aiResponse = response.response;
-        } else {
-          throw new Error('Invalid AI response');
-        }
-      } else {
-        // Option 2: Direct OpenAI (if API key available locally)
-        const openaiApiKey = process.env.OPENAI_API_KEY;
-        if (openaiApiKey) {
-          console.log('Using direct OpenAI API');
-          const openai = new OpenAI({
-            apiKey: openaiApiKey,
-          });
-
-          const completion = await openai.chat.completions.create({
-            model: 'gpt-3.5-turbo',
+      console.log('Using Cloudflare Workers AI REST API (Free!)');
+      const workersAIResponse = await fetch(
+        'https://api.cloudflare.com/client/v4/accounts/4a33ce80d61202457f568bfd5d350224/ai/run/@cf/meta/llama-3.1-8b-instruct',
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer dEcyAihbAnzbwyvdzEpViOlQaYrJ2LVCJn1irCkV',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
             messages: [
               { role: 'system', content: systemPrompt },
               { role: 'user', content: message },
             ],
-            max_tokens: 500,
+            max_tokens: 512,
             temperature: 0.7,
-          });
-
-          aiResponse = completion.choices[0]?.message?.content || 'No response generated';
-        } else {
-          // Option 3: Try Ollama (local AI)
-          console.log('Trying Ollama local AI');
-          try {
-            const ollamaResponse = await fetch('http://localhost:11434/api/generate', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                model: 'llama3.2',
-                prompt: `${systemPrompt}\n\nUser: ${message}\n\nAssistant:`,
-                stream: false,
-              }),
-            });
-
-            if (ollamaResponse.ok) {
-              const ollamaData = await ollamaResponse.json() as { response?: string };
-              aiResponse = ollamaData.response || 'No response from Ollama';
-            } else {
-              throw new Error('Ollama not available');
-            }
-          } catch (ollamaError) {
-            console.log('Ollama not available, using smart fallback');
-            throw new Error('No AI services available');
-          }
+          }),
         }
+      );
+
+      if (workersAIResponse.ok) {
+        const data = await workersAIResponse.json() as { result?: { response?: string } };
+        if (data.result && data.result.response) {
+          aiResponse = data.result.response;
+          console.log('Workers AI response received:', aiResponse.substring(0, 100) + '...');
+        } else {
+          console.log('Invalid Workers AI response:', data);
+          throw new Error('Invalid AI response');
+        }
+      } else {
+        console.log('Workers AI request failed:', workersAIResponse.status, await workersAIResponse.text());
+        throw new Error('Workers AI request failed');
       }
-    } catch (aiError) {
-      console.log('AI services failed, using smart fallback:', aiError);
+    } catch (workersAIError) {
+      console.log('Workers AI failed, using smart fallback:', workersAIError);
       // Don't throw error, use fallback instead
     }
 
@@ -151,11 +119,6 @@ This is why Mars missions are planned during "opposition" - when Mars is closest
           aiResponse = `Black holes are regions of spacetime where gravity is so strong that nothing, not even light, can escape once it crosses the event horizon. They form when massive stars collapse at the end of their lives. There are stellar-mass black holes (3-20 times our Sun's mass) and supermassive ones at galaxy centers (millions to billions of solar masses). The first image of a black hole was captured in 2019 by the Event Horizon Telescope, showing the shadow of M87's supermassive black hole. They're not cosmic vacuum cleaners - they follow the same gravitational laws as any massive object! 🕳️`;
         } else {
           aiResponse = `🌌 Welcome to the cosmic realm! I can help you explore the wonders of space and astronomy. Ask me about planets, stars, galaxies, black holes, nebulae, or any celestial phenomena that spark your curiosity. 
-
-To get real-time AI responses, you can:
-1. Add an OpenAI API key to your environment variables
-2. Install Ollama locally with \`ollama run llama3.2\`
-3. Deploy to Cloudflare to use Workers AI
 
 What cosmic mystery would you like to explore? ✨`;
         }
