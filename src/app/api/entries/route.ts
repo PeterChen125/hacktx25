@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { nanoid } from 'nanoid';
+import { getCloudflareContext } from '@opennextjs/cloudflare';
 
 type Env = {
   DB: {
@@ -20,10 +21,55 @@ function getUserId(request: NextRequest): string {
 // GET: Fetch all entries for user
 export async function GET(request: NextRequest) {
   try {
-    const env = process.env as unknown as Env;
     const userId = getUserId(request);
+    
+    // Try different ways to access the environment
+    const env = process.env as unknown as Env;
+    const globalEnv = globalThis as any;
+    const cloudflareContext = getCloudflareContext();
+    
+    console.log('Environment check:', { 
+      hasDB: !!env.DB, 
+      hasGlobalDB: !!globalEnv.DB,
+      hasCloudflareContext: !!cloudflareContext,
+      hasCloudflareDB: !!(cloudflareContext as any)?.env?.DB,
+      envKeys: Object.keys(env),
+      globalKeys: Object.keys(globalEnv).filter(k => k.includes('DB') || k.includes('env') || k.includes('DB'))
+    });
 
-    if (!env.DB) {
+    // Try to get DB from cloudflare context, env, or global - OpenNext might expose it differently
+    const db = (cloudflareContext as any)?.env?.DB || env.DB || globalEnv.DB;
+
+    if (!db) {
+      console.log('D1 database not detected in environment, trying direct API call');
+      
+      // Try direct D1 API call as fallback
+      try {
+        const d1Response = await fetch(`https://api.cloudflare.com/client/v4/accounts/4a33ce80d61202457f568bfd5d350224/d1/database/e4d691fa-9856-4306-b90f-82c63ef3d6d0/query`, {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer dEcyAihbAnzbwyvdzEpViOlQaYrJ2LVCJn1irCkV',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            sql: `SELECT e.*, em.sentiment, em.emotions, em.intensity, em.color_palette
+                  FROM entries e
+                  LEFT JOIN emotions em ON e.id = em.entry_id
+                  WHERE e.user_id = ?
+                  ORDER BY e.created_at DESC
+                  LIMIT 50`,
+            params: [userId]
+          }),
+        });
+
+        if (d1Response.ok) {
+          const result = await d1Response.json() as { result?: any[] };
+          return NextResponse.json({ entries: result.result || [] });
+        }
+      } catch (d1Error) {
+        console.log('Direct D1 API call failed:', d1Error);
+      }
+
       // Fallback: return mock data if D1 not configured yet
       return NextResponse.json({
         entries: [],
@@ -31,7 +77,7 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const { results } = await env.DB.prepare(
+    const { results } = await db.prepare(
       `SELECT e.*, em.sentiment, em.emotions, em.intensity, em.color_palette
        FROM entries e
        LEFT JOIN emotions em ON e.id = em.entry_id
@@ -59,11 +105,26 @@ export async function POST(request: NextRequest) {
     }
 
     const env = process.env as unknown as Env;
+    const globalEnv = globalThis as any;
+    const cloudflareContext = getCloudflareContext();
     const userId = getUserId(request);
     const entryId = nanoid();
     const now = Date.now();
 
-    if (!env.DB) {
+    console.log('Environment check for POST:', { 
+      hasDB: !!env.DB, 
+      hasGlobalDB: !!globalEnv.DB,
+      hasCloudflareContext: !!cloudflareContext,
+      hasCloudflareDB: !!(cloudflareContext as any)?.env?.DB,
+      envKeys: Object.keys(env),
+      globalKeys: Object.keys(globalEnv).filter(k => k.includes('DB') || k.includes('env'))
+    });
+
+    // Try to get DB from cloudflare context, env, or global - OpenNext might expose it differently
+    const db = (cloudflareContext as any)?.env?.DB || env.DB || globalEnv.DB;
+
+    if (!db) {
+      console.log('D1 database not detected in environment for POST');
       // Fallback: return success without saving
       return NextResponse.json({
         entry: { id: entryId, content, created_at: now },
@@ -72,7 +133,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Save entry to D1
-    await env.DB.prepare(
+    await db.prepare(
       `INSERT INTO entries (id, user_id, content, created_at, updated_at)
        VALUES (?, ?, ?, ?, ?)`
     )
@@ -101,7 +162,7 @@ export async function POST(request: NextRequest) {
 
         // Save emotion data
         const emotionId = nanoid();
-        await env.DB.prepare(
+        await db.prepare(
           `INSERT INTO emotions (id, entry_id, sentiment, confidence, emotions, intensity, color_palette, created_at)
            VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
         )
@@ -146,14 +207,19 @@ export async function DELETE(request: NextRequest) {
     }
 
     const env = process.env as unknown as Env;
+    const globalEnv = globalThis as any;
+    const cloudflareContext = getCloudflareContext();
     const userId = getUserId(request);
 
-    if (!env.DB) {
+    // Try to get DB from cloudflare context, env, or global - OpenNext might expose it differently
+    const db = (cloudflareContext as any)?.env?.DB || env.DB || globalEnv.DB;
+
+    if (!db) {
       return NextResponse.json({ success: true });
     }
 
     // Delete entry (emotions will cascade delete)
-    await env.DB.prepare(
+    await db.prepare(
       `DELETE FROM entries WHERE id = ? AND user_id = ?`
     )
       .bind(entryId, userId)
