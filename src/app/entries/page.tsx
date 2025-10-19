@@ -64,7 +64,7 @@ export default function EntriesPage() {
     <div className="min-h-screen bg-gradient-to-b from-[#0A0E27] via-[#1A1F3A] to-[#0A0E27] text-white">
       {/* Header */}
       <header className="border-b border-white/10 backdrop-blur-sm bg-white/5">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between">
           <motion.h1
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -72,24 +72,24 @@ export default function EntriesPage() {
           >
             📚 Your Cosmic Journey
           </motion.h1>
-          <div className="flex gap-4">
+          <div className="flex gap-2 sm:gap-4">
             <button
               onClick={() => router.push('/')}
-              className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all"
+              className="px-2 sm:px-4 py-1 sm:py-2 text-sm sm:text-base rounded-lg bg-white/10 hover:bg-white/20 transition-all"
             >
-              🏠 Home
+              🏠 <span className="hidden sm:inline">Home</span>
             </button>
             <button
               onClick={() => router.push('/journal')}
-              className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 transition-all"
+              className="px-2 sm:px-4 py-1 sm:py-2 text-sm sm:text-base rounded-lg bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 transition-all"
             >
-              ✍️ New Entry
+              ✍️ <span className="hidden sm:inline">New Entry</span>
             </button>
             <button
               onClick={() => router.push('/cosmos')}
-              className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all"
+              className="px-2 sm:px-4 py-1 sm:py-2 text-sm sm:text-base rounded-lg bg-white/10 hover:bg-white/20 transition-all"
             >
-              🌌 Ask Cosmos
+              🌌 <span className="hidden sm:inline">Ask Cosmos</span>
             </button>
           </div>
         </div>
@@ -145,7 +145,7 @@ export default function EntriesPage() {
                           : 'bg-white/5 border-white/10 hover:bg-white/10'
                       }`}
                     >
-                      <div className="flex justify-between items-start mb-2">
+                      <div className="flex justify-between items-center mb-2">
                         <p className="text-sm text-gray-400">
                           {formatDistance(entry.created_at, Date.now(), {
                             addSuffix: true,
@@ -156,9 +156,10 @@ export default function EntriesPage() {
                             e.stopPropagation();
                             handleDelete(entry.id);
                           }}
-                          className="text-red-400 hover:text-red-300 text-sm"
+                          className="w-6 h-6 flex items-center justify-center bg-red-500 hover:bg-red-600 text-white rounded-full text-sm font-bold transition-all transform hover:scale-110 active:scale-95 shadow-lg"
+                          title="Delete entry"
                         >
-                          🗑️
+                          ×
                         </button>
                       </div>
                       <p className="line-clamp-3 text-gray-200 mb-2">

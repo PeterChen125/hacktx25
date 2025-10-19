@@ -92,7 +92,7 @@ export default function JournalPage() {
     <div className="min-h-screen bg-gradient-to-b from-[#0A0E27] via-[#1A1F3A] to-[#0A0E27] text-white">
       {/* Header */}
       <header className="border-b border-white/10 backdrop-blur-sm bg-white/5">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between">
           <motion.h1
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -100,24 +100,24 @@ export default function JournalPage() {
           >
             ✨ Nebula Notes
           </motion.h1>
-          <div className="flex gap-4">
+          <div className="flex gap-2 sm:gap-4">
             <button
               onClick={() => router.push('/')}
-              className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all"
+              className="px-2 sm:px-4 py-1 sm:py-2 text-sm sm:text-base rounded-lg bg-white/10 hover:bg-white/20 transition-all"
             >
-              🏠 Home
+              🏠 <span className="hidden sm:inline">Home</span>
             </button>
             <button
               onClick={() => router.push('/entries')}
-              className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all"
+              className="px-2 sm:px-4 py-1 sm:py-2 text-sm sm:text-base rounded-lg bg-white/10 hover:bg-white/20 transition-all"
             >
-              📚 My Entries
+              📚 <span className="hidden sm:inline">My Entries</span>
             </button>
             <button
               onClick={() => router.push('/cosmos')}
-              className="px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 transition-all"
+              className="px-2 sm:px-4 py-1 sm:py-2 text-sm sm:text-base rounded-lg bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 transition-all"
             >
-              🌌 Ask the Cosmos
+              🌌 <span className="hidden sm:inline">Ask the Cosmos</span>
             </button>
           </div>
         </div>
