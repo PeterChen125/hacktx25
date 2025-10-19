@@ -186,7 +186,6 @@ export default function Home() {
           <div className="flex flex-wrap justify-center gap-3">
             {[
               'Cloudflare Workers AI',
-              'Next.js',
             ].map((tech) => (
               <span
                 key={tech}
