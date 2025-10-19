@@ -33,16 +33,25 @@ export default function EntriesPage() {
       // Get entries from localStorage instead of shared database
       const localEntries = getEntries();
       
+      // Debug: Log what we're getting from localStorage
+      console.log('Raw localStorage entries:', localEntries);
+      
       // Convert to the expected format
-      const formattedEntries: Entry[] = localEntries.map(entry => ({
-        id: entry.id,
-        content: entry.content,
-        created_at: entry.created_at,
-        sentiment: entry.emotion?.sentiment,
-        emotions: entry.emotion?.emotions,
-        intensity: entry.emotion?.intensity,
-        colorPalette: entry.emotion?.colorPalette,
-      }));
+      const formattedEntries: Entry[] = localEntries.map(entry => {
+        const formatted = {
+          id: entry.id,
+          content: entry.content,
+          created_at: entry.created_at,
+          sentiment: entry.emotion?.sentiment,
+          emotions: entry.emotion?.emotions,
+          intensity: entry.emotion?.intensity,
+          colorPalette: entry.emotion?.colorPalette,
+        };
+        
+        // Debug: Log each formatted entry
+        console.log('Formatted entry:', formatted);
+        return formatted;
+      });
       
       setEntries(formattedEntries);
     } catch (error) {
@@ -217,14 +226,24 @@ export default function EntriesPage() {
                     </p>
                   </div>
 
-                  {selectedEntry.colorPalette && (
-                    <div className="flex justify-center">
-                      <NebulaCanvas
-                        emotions={selectedEntry.emotions || ['neutral']}
-                        intensity={selectedEntry.intensity || 0.5}
-                        colorPalette={selectedEntry.colorPalette}
-                        size="medium"
-                      />
+                  {/* Always show nebula - use default if no emotion data */}
+                  <div className="flex justify-center">
+                    <NebulaCanvas
+                      emotions={selectedEntry.emotions || ['neutral']}
+                      intensity={selectedEntry.intensity || 0.5}
+                      colorPalette={selectedEntry.colorPalette || ['#7F8C8D', '#95A5A6', '#BDC3C7', '#D5DBDB']}
+                      size="medium"
+                    />
+                  </div>
+                  
+                  {/* Debug info */}
+                  {process.env.NODE_ENV === 'development' && (
+                    <div className="mt-4 p-3 bg-black/20 rounded-lg text-xs">
+                      <p><strong>Debug Info:</strong></p>
+                      <p>Emotions: {JSON.stringify(selectedEntry.emotions)}</p>
+                      <p>Intensity: {selectedEntry.intensity}</p>
+                      <p>Color Palette: {JSON.stringify(selectedEntry.colorPalette)}</p>
+                      <p>Sentiment: {selectedEntry.sentiment}</p>
                     </div>
                   )}
                 </motion.div>
