@@ -1,0 +1,54 @@
+# Nebula Notes - Cursor Rules
+
+## Project Context
+
+This is a HackTX 2025 hackathon project - a cosmic journaling app that transforms emotions into nebula visualizations using Cloudflare Workers AI.
+
+## Tech Stack
+
+- Next.js 15 + React 19
+- Cloudflare Workers + Pages
+- Workers AI (Llama 3.1, DistilBERT)
+- D1 Database (SQLite)
+- KV (Key-Value Store)
+- TailwindCSS 4 + Framer Motion
+
+## Coding Standards
+
+- Use TypeScript for type safety
+- Prefer functional components with hooks
+- Use async/await for API calls
+- Add loading states for all async operations
+- Include error handling with try/catch
+- Use Framer Motion for animations
+- Follow cosmic theme (purples, blues, space vibes)
+
+## File Organization
+
+- API routes in `src/app/api/`
+- Pages in `src/app/[page]/`
+- Reusable components in `src/components/`
+- Global styles in `src/app/globals.css`
+
+## Cloudflare Bindings
+
+- `env.AI` - Workers AI
+- `env.DB` - D1 Database
+- `env.JOURNAL_KV` - KV Namespace
+
+## Color Palette
+
+```css
+--cosmic-black: #0a0e27
+--deep-space: #1a1f3a
+--nebula-purple: #b19cd9
+--star-blue: #4a90e2
+--cosmic-pink: #e8daef
+```
+
+## Development Tips
+
+- Workers AI only works when deployed (use fallbacks in dev)
+- Test nebula on multiple browsers (WebGL)
+- Keep API responses under 512 tokens for speed
+- Use debouncing for real-time analysis (2s delay)

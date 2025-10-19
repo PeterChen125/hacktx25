@@ -3,7 +3,7 @@
  * https://developers.cloudflare.com/workers/wrangler/configuration/
  */ {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "hacktx25",
+  "name": "nebula-notes",
   "main": ".open-next/worker.js",
   "compatibility_date": "2025-10-08",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
@@ -14,5 +14,21 @@
   "observability": {
     "enabled": true
   },
-  "upload_source_maps": true
+  "upload_source_maps": true,
+  "ai": {
+    "binding": "AI"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "nebula-notes-db",
+      "database_id": "e4d691fa-9856-4306-b90f-82c63ef3d6d0"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "JOURNAL_KV",
+      "id": "72739973cde94e27acd0394a46639912"
+    }
+  ]
 }

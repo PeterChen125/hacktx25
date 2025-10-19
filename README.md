@@ -1,63 +1,212 @@
-# Next.js Framework Starter
+# 🌌 Nebula Notes
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/cloudflare/templates/tree/main/next-starter-template)
+**Transform Your Emotions Into Cosmic Art**
 
-<!-- dash-content-start -->
+A cosmic journaling app for HackTX 2025 that uses AI to analyze your emotions and render them as beautiful, real-time nebula visualizations.
 
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app). It's deployed on Cloudflare Workers as a [static website](https://developers.cloudflare.com/workers/static-assets/).
+![Nebula Notes](https://img.shields.io/badge/HackTX-2025-purple?style=for-the-badge)
+![Cloudflare](https://img.shields.io/badge/Cloudflare-Workers%20AI-orange?style=for-the-badge)
+![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge)
 
-This template uses [OpenNext](https://opennext.js.org/) via the [OpenNext Cloudflare adapter](https://opennext.js.org/cloudflare), which works by taking the Next.js build output and transforming it, so that it can run in Cloudflare Workers.
+## ✨ Features
 
-<!-- dash-content-end -->
+### 📝 Journaling
 
-Outside of this repo, you can start a new project with this template using [C3](https://developers.cloudflare.com/pages/get-started/c3/) (the `create-cloudflare` CLI):
+Write your thoughts in a distraction-free, beautiful editor with real-time emotion analysis.
+
+### 🌈 Emotion → Nebula
+
+Watch your emotions transform into dynamic WebGL nebulas:
+
+- **Joy**: Bright blues & purples
+- **Calm**: Soft purple & pink
+- **Sadness**: Deep blues
+- **Anger**: Reds & oranges
+- **Anxiety**: Warm oranges
+
+### 🔭 Ask the Cosmos
+
+An AI assistant that:
+
+- Answers astronomy questions
+- Provides gentle reflections on your journal entries
+- Powered by Llama 3.1 8B Instruct
+
+### 📚 Entry History
+
+View all your past entries with their associated emotional nebulas in a beautiful timeline.
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js 18+
+- Cloudflare account (for deployment)
+
+### AI Options (Choose One)
+
+1. **OpenAI API** (recommended) - Add `OPENAI_API_KEY` to `.env.local`
+2. **Ollama Local AI** (free) - Install Ollama and run `ollama serve`
+3. **Smart Fallbacks** (always works) - No setup needed
+
+### Installation
 
 ```bash
-npm create cloudflare@latest -- --template=cloudflare/templates/next-starter-template
-```
+# Clone the repo
+git clone <your-repo-url>
+cd hacktx25
 
-A live public deployment of this template is available at [https://next-starter-template.templates.workers.dev](https://next-starter-template.templates.workers.dev)
-
-## Getting Started
-
-First, run:
-
-```bash
+# Install dependencies
 npm install
-# or
-yarn install
-# or
-pnpm install
-# or
-bun install
-```
 
-Then run the development server (using the package manager of your choice):
-
-```bash
+# Run development server (works immediately!)
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit [http://localhost:3000](http://localhost:3000) to see your app!
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Optional: Enhanced AI Setup
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+**For OpenAI API** (best experience):
 
-## Deploying To Production
+```bash
+# Create .env.local file
+echo "OPENAI_API_KEY=your_key_here" > .env.local
+```
 
-| Command                           | Action                                       |
-| :-------------------------------- | :------------------------------------------- |
-| `npm run build`                   | Build your production site                   |
-| `npm run preview`                 | Preview your build locally, before deploying |
-| `npm run build && npm run deploy` | Deploy your production site to Cloudflare    |
-| `npm wrangler tail`               | View real-time logs for all Workers          |
+**For Ollama** (free local AI):
 
-## Learn More
+```bash
+# Install Ollama from https://ollama.ai/
+ollama pull llama3.2
+ollama serve
+```
 
-To learn more about Next.js, take a look at the following resources:
+**For Cloudflare Deployment** (see SETUP.md):
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npx wrangler d1 create nebula-notes-db
+npx wrangler kv:namespace create JOURNAL_KV
+# Update wrangler.jsonc with your IDs
+npx wrangler d1 execute nebula-notes-db --file=./schema.sql
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## 📦 Deploy
+
+```bash
+npm run deploy
+```
+
+Your app will be deployed to Cloudflare Pages + Workers!
+
+## 🏗️ Tech Stack
+
+- **Frontend**: Next.js 15, React 19, TailwindCSS 4, Framer Motion
+- **Backend**: Cloudflare Workers
+- **AI**: Workers AI (Llama 3.1, DistilBERT)
+- **Database**: D1 (SQLite)
+- **Cache**: KV (Key-Value Store)
+- **Deployment**: Cloudflare Pages + OpenNext
+
+## 🎯 HackTX 2025 Categories
+
+This project targets:
+
+✅ **Best Celestial Theme**
+
+- Space-themed UI with nebula visualizations
+- Astronomy Q&A chatbot
+- Cosmic personality throughout
+
+✅ **Best Design**
+
+- Beautiful micro-interactions
+- Smooth animations with Framer Motion
+- Delightful UX with low friction
+
+✅ **Best AI App with Cloudflare**
+
+- Workers AI for sentiment analysis & chat
+- D1 for persistent storage
+- KV for caching
+- Edge inference for speed
+
+## 📖 Documentation
+
+See [SETUP.md](./SETUP.md) for detailed setup instructions.
+
+## 🎨 Screenshots
+
+### Landing Page
+
+Beautiful animated starfield with gradient hero section.
+
+### Journal Editor
+
+Clean, distraction-free editor with live emotion preview.
+
+### Nebula Visualization
+
+Real-time particle system that responds to your emotions.
+
+### Cosmos Chat
+
+AI-powered astronomy Q&A and gentle reflections.
+
+## 🛠️ Development
+
+```bash
+# Run dev server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+
+# Deploy to Cloudflare
+npm run deploy
+
+# View logs
+npx wrangler tail
+```
+
+## 📝 Project Structure
+
+```
+/src
+  /app
+    /api
+      /analyze      → Sentiment analysis API
+      /chat         → AI chat API
+      /entries      → CRUD API
+    /journal        → Journal editor page
+    /cosmos         → Chat interface page
+    /entries        → History page
+    page.tsx        → Landing page
+  /components
+    NebulaCanvas.tsx → WebGL nebula visualization
+/schema.sql         → D1 database schema
+/wrangler.jsonc     → Cloudflare configuration
+```
+
+## 🤝 Contributing
+
+This is a hackathon project, but feel free to fork and experiment!
+
+## 📄 License
+
+MIT
+
+## 🌟 Acknowledgments
+
+- Cloudflare for the amazing Workers AI platform
+- HackTX 2025 for the inspiration
+- The cosmos for being endlessly fascinating ✨
+
+---
+
+Built with 💜 by [Your Team Name]
+
+_May your emotions shine as brightly as the stars_ 🌟
